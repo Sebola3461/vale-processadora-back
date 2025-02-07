@@ -1,5 +1,6 @@
 import odbc from "odbc";
 import { DebugLogger } from "../../helpers/DebugLogger";
+import { FormatDateToSQL } from "../../helpers/SQLDate";
 
 /**
  * Para o ser que vai ler isso depois, essa classe é apenas para encapsular todos os helpers e funções relacionadas ao banco de dados
@@ -21,6 +22,7 @@ export class DatabaseService {
       | number
       | undefined
       | boolean
+      | Date
       | null
     )[]
   ) {
@@ -35,11 +37,11 @@ export class DatabaseService {
         sanitizedValue = "NULL";
       }
 
-      if (
-        typeof valueToReplace == "object" &&
-        valueToReplace &&
-        valueToReplace.length
-      ) {
+      if (valueToReplace instanceof Date) {
+        sanitizedValue = `'${FormatDateToSQL(valueToReplace)}'`;
+      }
+
+      if (Array.isArray(valueToReplace)) {
         sanitizedValue = valueToReplace
           .map((value) => {
             if (typeof value == "number") return value;
