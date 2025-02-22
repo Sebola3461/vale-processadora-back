@@ -39,7 +39,7 @@ export class ApiRoute_Manutencao_ValidaEntrada extends ApiRoute {
       const dadosManutencao =
         await ApiServer.Services.Database.connection.query(
           ApiServer.Services.Database.ParseWildcard(
-            "SELECT * FROM MANUTENCAO WHERE NUMERO_SERIE = ?",
+            "SELECT * FROM MANUTENCAO WHERE NUMERO_SERIE = ? AND STATUS_ID NOT IN (4)",
             [serial]
           )
         );

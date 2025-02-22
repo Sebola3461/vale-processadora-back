@@ -26,7 +26,8 @@ export class DatabaseService {
       | null
     )[]
   ) {
-    for (const valueToReplace of values) {
+    for (let i = 0; i < values.length; i++) {
+      let valueToReplace = values[i];
       let sanitizedValue = valueToReplace;
 
       if (

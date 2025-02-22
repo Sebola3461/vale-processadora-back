@@ -8,6 +8,11 @@ import { ApiRoute_Estoque_Compra_POS_Criar } from "./routes/estoque/compra/pos/C
 import { ApiRoute_Manutencao_ValidaEntrada } from "./routes/manutencao/ValidaEntrada";
 import { ApiRoute_Manutencao_CriaEntrada } from "./routes/manutencao/CriarEntrada";
 import { ApiRoute_Manutencao_Atualizar } from "./routes/manutencao/AtualizaStatus";
+import { ApiRoute_Manutencao_Status } from "./routes/manutencao/GetManutencaoAtiva";
+import { ApiRoute_Manutencao_GetDados } from "./routes/manutencao/GetDados";
+import { ApiRoute_Manutencao_ProcessaConferencia } from "./routes/manutencao/ProcessaConferencia";
+import { ApiRoute_Estoque_MovimentarDispositivo } from "./routes/estoque/movimentacao/MovimentacaoEstoque";
+import { ApiRoute_Excecao_Buscar } from "./routes/estoque/excecao/BuscaExcecao";
 
 export class ApiServer {
   private static Server = express();
@@ -40,5 +45,11 @@ export class ApiServer {
     this.Routes.RegisterRoute(ApiRoute_Manutencao_ValidaEntrada);
     this.Routes.RegisterRoute(ApiRoute_Manutencao_CriaEntrada);
     this.Routes.RegisterRoute(ApiRoute_Manutencao_Atualizar);
+    this.Routes.RegisterRoute(ApiRoute_Manutencao_Status);
+    this.Routes.RegisterRoute(ApiRoute_Manutencao_GetDados);
+    this.Routes.RegisterRoute(ApiRoute_Manutencao_CriaEntrada);
+    this.Routes.RegisterRoute(ApiRoute_Manutencao_ProcessaConferencia);
+    this.Routes.RegisterRoute(ApiRoute_Estoque_MovimentarDispositivo);
+    this.Routes.RegisterRoute(ApiRoute_Excecao_Buscar);
   }
 }

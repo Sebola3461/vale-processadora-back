@@ -27,6 +27,12 @@ export class ApiRoute_Manutencao_CriaEntrada extends ApiRoute {
       )
         throw { status: HttpStatusCode.BadRequest, message: "Bad request" };
 
+      if (req.body.equipamentos.length < 1)
+        throw {
+          status: HttpStatusCode.BadRequest,
+          message: "Não há equipamentos na lista!",
+        };
+
       const equipamentos: string[] = req.body.equipamentos.map(
         (equipamento: any) => String(equipamento).trim()
       );
@@ -47,7 +53,7 @@ export class ApiRoute_Manutencao_CriaEntrada extends ApiRoute {
       const equipamentosEmManutencao =
         await ApiServer.Services.Database.connection.query(
           ApiServer.Services.Database.ParseWildcard(
-            "SELECT * FROM MANUTENCAO WHERE NUMERO_SERIE IN (?)",
+            "SELECT * FROM MANUTENCAO WHERE NUMERO_SERIE IN (?) AND STATUS_ID NOT IN (4)",
             [equipamentos]
           )
         );
@@ -89,7 +95,7 @@ export class ApiRoute_Manutencao_CriaEntrada extends ApiRoute {
             "INSERT INTO MANUTENCAO (NUMERO_SERIE, STATUS_INGENICO, DATA_ENTRADA, DATA_ATUALIZACAO,NUMERO_LOTE, NUMERO_NF, FABRICANTE, USUARIO, STATUS_ID) VALUES (?,?,?,?,?,?,?,?,?)",
             [
               equipamento,
-              null,
+              "Trânsito Envio",
               new Date(),
               null,
               req.body.numero_lote,

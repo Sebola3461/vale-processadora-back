@@ -29,6 +29,7 @@ export class ApiRoute_Manutencao_Atualizar extends ApiRoute {
           (item: any) =>
             typeof item.serial == "string" &&
             typeof item.status == "string" &&
+            [1, 2, 3].includes(item.statusId) &&
             ModeloEquipamentos.includes(GetEquipmentModel(item.serial))
         );
 
@@ -41,6 +42,7 @@ export class ApiRoute_Manutencao_Atualizar extends ApiRoute {
               (item: any) =>
                 typeof item?.serial != "string" ||
                 typeof item?.status != "string" ||
+                [1, 2, 3].includes(item.statusId) ||
                 !ModeloEquipamentos.includes(GetEquipmentModel(item.serial))
             )
             .concat(Array.from(req.body.equipamentos).filter((item) => !item)),
@@ -49,6 +51,7 @@ export class ApiRoute_Manutencao_Atualizar extends ApiRoute {
       const sanitizedEquipamentos = bodyEquipamentos as {
         serial: string;
         status: string;
+        statusId: number;
       }[];
 
       if (sanitizedEquipamentos.length < 1)
@@ -63,8 +66,8 @@ export class ApiRoute_Manutencao_Atualizar extends ApiRoute {
           NUMERO_SERIE: string;
         }>(
           ApiServer.Services.Database.ParseWildcard(
-            "SELECT NUMERO_SERIE,ID FROM MANUTENCAO WHERE NUMERO_SERIE IN (?)",
-            sanitizedEquipamentos.map((equip) => equip.serial)
+            "SELECT NUMERO_SERIE,ID FROM MANUTENCAO WHERE NUMERO_SERIE IN (?) AND STATUS_ID NOT IN (4)",
+            [sanitizedEquipamentos.map((equip) => equip.serial)]
           )
         );
 
@@ -87,8 +90,13 @@ export class ApiRoute_Manutencao_Atualizar extends ApiRoute {
       for (const equipamento of sanitizedEquipamentos) {
         await ApiServer.Services.Database.connection.query(
           ApiServer.Services.Database.ParseWildcard(
-            "UPDATE [MANUTENCAO] SET STATUS_INGENICO = ?, DATA_ATUALIZACAO = ? WHERE NUMERO_SERIE = ?",
-            [equipamento.status, new Date(), equipamento.serial]
+            "UPDATE [MANUTENCAO] SET STATUS_INGENICO = ?, DATA_ATUALIZACAO = ?, STATUS_ID = ? WHERE NUMERO_SERIE = ?",
+            [
+              equipamento.status,
+              new Date(),
+              equipamento.statusId,
+              equipamento.serial,
+            ]
           )
         );
       }
